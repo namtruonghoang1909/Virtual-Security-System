@@ -4,15 +4,21 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#ifdef MOCK_HARDWARE
+const std::string SYSFS_GPIO_ROOT = "/tmp/mock_sysfs/class/gpio";
+#else
+const std::string SYSFS_GPIO_ROOT = "/sys/class/gpio";
+#endif
+
 namespace hal {
 
 GpioPin::GpioPin(int pin_number) : _pin_number(pin_number) {
-    _base_path = "/sys/class/gpio/gpio" + std::to_string(_pin_number);
+    _base_path = SYSFS_GPIO_ROOT + "/gpio" + std::to_string(_pin_number);
 
     // Check if exported, if not, export it
     struct stat st;
     if (stat(_base_path.c_str(), &st) != 0) {
-        write_sysfs("/sys/class/gpio/export", std::to_string(_pin_number));
+        write_sysfs(SYSFS_GPIO_ROOT + "/export", std::to_string(_pin_number));
         // Small delay to allow udev to set permissions
         usleep(100000); 
     }
@@ -21,7 +27,7 @@ GpioPin::GpioPin(int pin_number) : _pin_number(pin_number) {
 GpioPin::~GpioPin() {
     // Usually, we don't unexport in a real system to avoid toggling glitches,
     // but for this prototype, we'll cleanup.
-    write_sysfs("/sys/class/gpio/unexport", std::to_string(_pin_number));
+    write_sysfs(SYSFS_GPIO_ROOT + "/unexport", std::to_string(_pin_number));
 }
 
 bool GpioPin::set_direction(GpioDirection dir) {
