@@ -1,6 +1,6 @@
 # Virtual Security System (VSS)
 
-A professional-grade, distributed security system targeting an **AArch64 Embedded Linux** environment virtualized via **QEMU**. 
+A distributed security system targeting an **AArch64 Embedded Linux** environment virtualized via **QEMU**. 
 
 > [!IMPORTANT]  
 > **Purpose & Scope:** This is an **educational practice project** designed to master low-level Linux systems programming. It is **NOT** a production system. The primary goal is to gain hands-on experience with kernel-space/user-space boundaries and high-performance IPC.
